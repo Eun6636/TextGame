@@ -7,7 +7,7 @@ namespace TextGame2
     {
         static int Map = 0;
         static bool Purchase = false; //상점에서 아이템 구매중인지 여부
-
+        //static bool Wear = false;
 
 
         static Character Player = new Character();
@@ -21,7 +21,9 @@ namespace TextGame2
             public int Defense = 5;
             public int HP = 100;
             public int Gold = 1500;
-            public List<item> haveitem = new List<item>();  //플레이어가 가지고 있는 아이템 목록
+            //플레이어가 가지고 있는 아이템 인벤토리에서 사용
+            public List<item> haveitem1 = new List<item>();  //방어구
+            public List<item> haveitem2 = new List<item>();  //무구
 
 
             //나중에 던전 들어갈때 위의 변수를 이용한 함수 만들예정
@@ -86,7 +88,7 @@ namespace TextGame2
 
                         break;
                     case 2: //인벤토리
-                        Console.WriteLine("인벤토리");
+                        Inventory();
                         break;
                     case 3: //상점
                         Store();
@@ -206,21 +208,65 @@ namespace TextGame2
 
             Console.WriteLine("[아이템 목록]");
 
+            foreach (var item in Player.haveitem1)  //방어구 반복
+            {
+                if(!item.Setting) //장착이 아닐경우
+                {
+                    Console.WriteLine("- " + "   " + item.Name + "\t |  방어력  " +
+                           item.Plusstat + "  |" + "\t" + item.Explanation);
+                }
+                else //장착일 경우
+                {
+                    Console.Write("- [");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("E");
+                    Console.ResetColor();
+                    Console.Write("]    ");
+                    Console.WriteLine("   " + item.Name + "\t |  방어력  " + 
+                        item.Plusstat + "  |" + "\t" + item.Explanation);
 
+                }
+            }
+
+            foreach (var item in Player.haveitem2)
+            {
+                if (!item.Setting) //장착이 아닐경우
+                {
+                    Console.WriteLine("- " + "   " + item.Name + "\t |  방어력  " +
+                           item.Plusstat + "  |" + "\t" + item.Explanation);
+                }
+                else //장착일 경우
+                {
+                    Console.Write("- [");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("E");
+                    Console.ResetColor();
+                    Console.Write("]    ");
+                    Console.WriteLine("   " + item.Name + "\t |  공격력  " +
+                        item.Plusstat + "  |" + "\t" + item.Explanation);
+
+                }
+            }
 
             Console.WriteLine();
             Console.WriteLine("1. 장착관리");
             Console.WriteLine("0. 나가기");
 
 
+
+
+
             //-----------------------------------입력
-            if (int.Parse(Console.ReadLine()) == 0)
+
+            string userInput = Console.ReadLine();
+            if (userInput == "0")
             {
                 Map = 0;
             }
-            else if (int.Parse(Console.ReadLine()) == 1)
+            else if (userInput == "1")
             {
-
+                Console.Clear();
+                Mounting();
             }
             else
             {
@@ -241,11 +287,74 @@ namespace TextGame2
 
             Console.WriteLine("[아이템 목록]");
 
+
+            //화면 배치 -----------------
+            int i = 1;
+            List<item> Foritem = new List<item>(); //장착 하기를 위해
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            foreach (var item in Player.haveitem1)  //방어구 반복
+            {
+                if (!item.Setting) //장착이 아닐경우
+                {
+                    Console.WriteLine("- " + i  + "   " + item.Name + "\t |  방어력  " +
+                           item.Plusstat + "  |" + "\t" + item.Explanation);
+                }
+                else //장착일 경우
+                {
+                    Console.Write("- "+ i +" [");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("E");
+                    Console.ResetColor();
+                    Console.Write("]    ");
+                    Console.WriteLine("   " + item.Name + "\t |  방어력  " +
+                        item.Plusstat + "  |" + "\t" + item.Explanation);
+
+                }
+            }
+
+            foreach (var item in Player.haveitem2)
+            {
+                if (!item.Setting) //장착이 아닐경우
+                {
+                    Console.WriteLine("- " + i + "   " + item.Name + "\t |  방어력  " +
+                           item.Plusstat + "  |" + "\t" + item.Explanation);
+                }
+                else //장착일 경우
+                {
+                    Console.Write("- " + i + " [");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("E");
+                    Console.ResetColor();
+                    Console.Write("]    ");
+                    Console.WriteLine("   " + item.Name + "\t |  공격력  " +
+                        item.Plusstat + "  |" + "\t" + item.Explanation);
+
+                }
+            }
+            Console.ResetColor();
+
+
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
+            //-----------------------------------------
 
 
-            //여기에 콘솔 리드라인 받아서 각 숫자 기능 설정
+            string userInput = Console.ReadLine();
+            if (userInput == "0")
+            {
+                Map = 0;
+            }
+            else if (userInput == "1")
+            {
+                Console.Clear();
+                Mounting();
+            }
+            else
+            {
+                Fail();
+                Mounting();
+            }
         }
 
 
@@ -413,7 +522,7 @@ namespace TextGame2
                             {
                                 Player.Gold -= item.Price; //플레이어 돈을 깎고
                                 item.Have = true;  //갖고 있음 표시로 바꿔줌(구매 완료로 됨
-                                Player.haveitem.Add(item); //플레이어 아이템에 갱신
+                                Player.haveitem2.Add(item); //플레이어 아이템에 갱신
 
                                 Console.Clear();
 
@@ -452,7 +561,7 @@ namespace TextGame2
                             {
                                 Player.Gold -= item.Price; //플레이어 돈을 깎고
                                 item.Have = true;  //갖고 있음 표시로 바꿔줌(구매 완료로 됨
-                                Player.haveitem.Add(item); //플레이어 아이템에 갱신
+                                Player.haveitem1.Add(item); //플레이어 아이템에 갱신
 
                                 Console.Clear();
 
