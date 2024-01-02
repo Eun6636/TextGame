@@ -1,0 +1,562 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace TextGame2
+{
+    class Program
+    {
+        static int Map = 0;
+        static bool Purchase = false; //상점에서 아이템 구매중인지 여부
+
+
+
+        static Character Player = new Character();
+
+        class Character
+        {
+            public string Name { get; set; }
+            public int LV = 1;
+            public string Chad = "전사";
+            public int Attack = 10;
+            public int Defense = 5;
+            public int HP = 100;
+            public int Gold = 1500;
+            public List<item> haveitem = new List<item>();  //플레이어가 가지고 있는 아이템 목록
+
+
+            //나중에 던전 들어갈때 위의 변수를 이용한 함수 만들예정
+
+
+        }
+
+
+
+
+        class item  //방어구 아이템
+        {
+            public string Name;
+            public int Plusstat;
+            public string Explanation; //아이템 설명
+            public int Price;
+            public bool Have;  //자동으로 false
+            public bool Setting;  //장착여부
+
+        }
+
+
+
+        //아이템 생성------------------------------------
+
+
+        static List<item> Armors = new List<item> { };
+        static List<item> Weapons = new List<item>();
+
+
+        static void Main(string[] args)
+        {
+
+
+            CreateItem1(Armors);
+            CreateItem2(Weapons);
+
+            //---------------------------------------------
+            Console.WriteLine("당신의 이름을 알려주세요.");
+
+
+            Player.Name = Console.ReadLine();  //캐릭터 이름까지 설정
+
+            Console.Clear(); //이전 내용 지우기
+            Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
+            Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+
+            StartMap();
+
+            while (true) // 조건 수정
+            {
+
+                Console.Clear(); //이전 내용 지우기
+                switch (Map)
+                {
+                    case 0:  //시작마을
+                        StartMap();
+                        break;
+
+                    case 1: //상태보기
+                        State(Player);
+
+                        break;
+                    case 2: //인벤토리
+                        Console.WriteLine("인벤토리");
+                        break;
+                    case 3: //상점
+                        Store();
+                        break;
+
+                    default:
+                        break;
+                }
+
+
+
+            }
+
+
+
+        }
+
+
+
+        // ----------------------------------------------- 함수
+        static void StartMap()
+        {
+
+            Console.WriteLine();
+            Console.WriteLine("============================");
+            Console.WriteLine("          활동 선택 ");
+            Console.WriteLine("============================");
+
+
+            Console.ForegroundColor = ConsoleColor.Yellow; //글자 색 변경
+
+            Console.WriteLine();
+            Console.WriteLine("1. 상태 보기");
+            Console.WriteLine("2. 인벤토리");
+            Console.WriteLine("3. 상점");
+
+            Console.ResetColor();//  색상 리셋
+
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            Exception();
+        }
+
+
+
+
+        static void State(Character character)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("1. 상태 보기");
+            Console.ResetColor();
+            Console.WriteLine("캐릭터의 정보가 표시됩니다.");
+            Console.WriteLine();
+
+            Console.Write("Level :   " + "\t");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(character.LV);
+            Console.ResetColor();
+
+
+            Console.WriteLine("\t" + "\t" + "Chad" + "\t" + " ( 전사 )");
+
+            Console.WriteLine();
+
+            Console.Write("공격력 : " + "\t");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(character.Attack);
+            Console.ResetColor();
+
+            Console.Write("방어력 : " + "\t");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(character.Defense);
+            Console.ResetColor();
+
+            Console.Write("체력 :    " + "\t");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(character.HP);
+            Console.ResetColor();
+
+            Console.Write("Gold :    " + "\t");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(character.Gold);
+            Console.ResetColor();
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("0. 나가기");
+            Console.ResetColor();
+
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+
+            //-----------------------------입력
+            if (int.Parse(Console.ReadLine()) == 0)
+            {
+                Map = 0;
+            }
+            else
+            {
+                Fail();
+                State(character);
+            }
+
+        }
+
+
+        static void Inventory()
+        {
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("인벤토리");
+            Console.ResetColor();
+            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine();
+
+            Console.WriteLine("[아이템 목록]");
+
+
+
+            Console.WriteLine();
+            Console.WriteLine("1. 장착관리");
+            Console.WriteLine("0. 나가기");
+
+
+            //-----------------------------------입력
+            if (int.Parse(Console.ReadLine()) == 0)
+            {
+                Map = 0;
+            }
+            else if (int.Parse(Console.ReadLine()) == 1)
+            {
+
+            }
+            else
+            {
+                Fail();
+                Inventory();
+            }
+        }
+
+
+        static void Mounting()  //장착관리
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("인벤토리 - 장착관리");
+            Console.ResetColor();
+            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine();
+
+
+            Console.WriteLine("[아이템 목록]");
+
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+
+
+            //여기에 콘솔 리드라인 받아서 각 숫자 기능 설정
+        }
+
+
+
+        static void Store()  //상점
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("상점");
+            Console.ResetColor();
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+            Console.WriteLine();
+
+            Console.WriteLine("[보유 골드]");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("{0}  ", Player.Gold);
+            Console.ResetColor();
+            Console.WriteLine("G");
+            Console.WriteLine();
+
+
+            Console.WriteLine("[아이템 목록]");
+
+
+            int i = 1;
+
+            List<item> Foritem = new List<item>();  //여기서 한꺼번에 목록 저장 (플레이어에게 보낼 목록)
+            foreach (var item in Armors)
+            {
+                Foritem.Add(item);
+
+
+                if (Purchase) //구매할 예정일 경우 숫자로 표시
+                {
+
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    if (!item.Have)//안가지고 있을경우
+                    {
+                        Console.WriteLine("- " + i + "   " + item.Name + "\t |  방어력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + item.Price);
+                    }
+                    else
+                    {
+                        Console.WriteLine("- " + i + "   " + item.Name + "\t |  방어력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + "구매 완료");
+                    }
+
+                    i++;
+                    Console.ResetColor();
+                }
+                else
+                {
+                    if (!item.Have)//안가지고 있을경우
+                    {
+                        Console.WriteLine("- " + item.Name + "\t |  방어력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + item.Price);
+                    }
+                    else
+                    {
+                        Console.WriteLine("- " + item.Name + "\t |  방어력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + "구매 완료");
+                    }
+
+                }
+
+
+            }
+
+            foreach (var item in Weapons)
+            {
+
+                Foritem.Add(item);
+
+                if (Purchase) //구매할 예정일 경우 숫자로 표시
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    if (!item.Have)//안가지고 있을경우
+                    {
+                        Console.WriteLine("- " + i + "   " + item.Name + "\t |  공격력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + item.Price);
+                    }
+                    else
+                    {
+                        Console.WriteLine("- " + i + "   " + item.Name + "\t |  공격력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + "구매 완료");
+                    }
+
+                    i++;
+                    Console.ResetColor();
+                }
+                else
+                {
+                    if (!item.Have)//안가지고 있을경우
+                    {
+                        Console.WriteLine("- " + item.Name + "\t |  공격력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + item.Price);
+                    }
+                    else
+                    {
+                        Console.WriteLine("- " + item.Name + "\t |  공격력  " +
+                            item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + "구매 완료");
+                    }
+
+                }
+
+
+            }
+
+            //구매할 예정일경우 해당 함수 다시 호출 및 Purchase true 하셈
+
+            if (!Purchase)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine("1. 아이템 구매");
+                Console.WriteLine("0. 나가기");
+
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+
+                string userInput = Console.ReadLine();
+                if (userInput == "0") //나가기
+                {
+                    Map = 0;
+                }
+                else if (userInput == "1")
+                {
+                    Purchase = true;
+                    Console.Clear();
+                    Store();
+                }
+                else
+                {
+                    Fail();
+                    Store();
+                }
+            }
+            else if (Purchase)
+            {
+                Console.WriteLine();
+                Console.WriteLine("0. 나가기");
+
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+                int userInput = int.Parse(Console.ReadLine());
+
+                if (userInput == 0)
+                {
+                    Map = 0;
+                    Purchase = false;
+                }
+                else if (Foritem[userInput - 1] == null)//잘못된 숫자
+                {
+                    Fail();
+                    Store();
+                }
+                else if (!Foritem[userInput - 1].Have) //아직 구매 안했을 경우
+                {
+                    foreach (var item in Weapons)
+                    {
+                        if (Foritem[userInput - 1].Name == item.Name)  //이름이 같은 아이템 찾기
+                        {
+                            if (item.Price <= Player.Gold)  //돈이 된다면
+                            {
+                                Player.Gold -= item.Price; //플레이어 돈을 깎고
+                                item.Have = true;  //갖고 있음 표시로 바꿔줌(구매 완료로 됨
+                                Player.haveitem.Add(item); //플레이어 아이템에 갱신
+
+                                Console.Clear();
+
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                Console.WriteLine("***구매를 완료했습니다***");
+                                Console.WriteLine("***구매를 완료했습니다***");
+                                Console.WriteLine("***구매를 완료했습니다***");
+                                Console.ResetColor();
+
+                                Console.WriteLine();
+
+                                Store();
+                            }
+                            else  //돈이 안된다면
+                            {
+                                Console.Clear();
+
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("***Gold 가 부족합니다***");
+                                Console.WriteLine("***Gold 가 부족합니다***");
+                                Console.WriteLine("***Gold 가 부족합니다***");
+                                Console.ResetColor();
+
+                                Console.WriteLine();
+
+                                Store();
+                            }
+                        }
+                    }
+
+                    foreach (var item in Armors)
+                    {
+                        if (Foritem[userInput - 1].Name == item.Name)  //이름이 같은 아이템 찾기
+                        {
+                            if (item.Price <= Player.Gold)  //돈이 된다면
+                            {
+                                Player.Gold -= item.Price; //플레이어 돈을 깎고
+                                item.Have = true;  //갖고 있음 표시로 바꿔줌(구매 완료로 됨
+                                Player.haveitem.Add(item); //플레이어 아이템에 갱신
+
+                                Console.Clear();
+
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                Console.WriteLine("***구매를 완료했습니다***");
+                                Console.WriteLine("***구매를 완료했습니다***");
+                                Console.WriteLine("***구매를 완료했습니다***");
+                                Console.ResetColor();
+
+                                Console.WriteLine();
+
+                                Store();
+                            }
+                            else  //돈이 안된다면
+                            {
+                                Console.Clear();
+
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("***Gold 가 부족합니다***");
+                                Console.WriteLine("***Gold 가 부족합니다***");
+                                Console.WriteLine("***Gold 가 부족합니다***");
+                                Console.ResetColor();
+
+                                Console.WriteLine();
+
+                                Store();
+                            }
+                        }
+                    }
+                }
+                else if (Foritem[userInput - 1].Have)  //이미 구매한 경우
+                {
+                    Console.Clear();
+
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("***이미 구매한 아이템입니다***");
+                    Console.WriteLine("***이미 구매한 아이템입니다***");
+                    Console.WriteLine("***이미 구매한 아이템입니다***");
+                    Console.ResetColor();
+
+                    Console.WriteLine();
+
+                    Store();
+                }
+
+
+            }
+
+        }
+
+
+
+
+
+        //아이템 정렬--------------------------------------------------
+        static void CreateItem1(List<item> It1) //방어력 아이템 셋팅 함수
+        {
+            It1.Add(new item { Name = "수련자 갑옷    ", Plusstat = 5, Explanation = "수련에 도움을 주는 갑옷입니다.    ", Price = 1000 });
+            It1.Add(new item { Name = "무쇠갑옷       ", Plusstat = 9, Explanation = "무쇠로 만들어져 튼튼한 갑옷입니다.", Price = 2200 });
+            It1.Add(new item { Name = "스파르타의 갑옷", Plusstat = 15, Explanation = "무쇠로 만들어져 튼튼한 갑옷입니다.", Price = 3500 });
+        }
+
+        static void CreateItem2(List<item> It2) //공격력 아이템 셋팅 함수
+        {
+            It2.Add(new item { Name = "낡은 검        ", Plusstat = 2, Explanation = "쉽게 볼 수 있는 낡은 검입니다.     ", Price = 600 });
+            It2.Add(new item { Name = "청동 도끼      ", Plusstat = 5, Explanation = "어디선가 사용됐던 거 같은 도끼입니다.", Price = 1500 });
+            It2.Add(new item { Name = "스파르타의 창  ", Plusstat = 7, Explanation = "스파르타의 전사들이 사용했다는 전설의 창입니다.", Price = 2700 });
+        }
+
+
+        //----------------------------------------------
+
+
+        static bool Exception() //예외처리
+        {
+
+            if (int.TryParse(Console.ReadLine(), out Map))
+            {
+                return true;
+            }
+            else
+            {
+
+                Fail();
+                return false;
+            }
+
+        }
+
+        static void Fail()
+        {
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("***잘못된 입력입니다***");
+            Console.WriteLine("***잘못된 입력입니다***");
+            Console.WriteLine("***잘못된 입력입니다***");
+            Console.ResetColor();
+
+            Console.WriteLine();
+        }
+
+
+
+    }
+}
+
