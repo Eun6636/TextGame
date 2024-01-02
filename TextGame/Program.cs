@@ -147,6 +147,9 @@ namespace TextGame2
             Console.WriteLine("캐릭터의 정보가 표시됩니다.");
             Console.WriteLine();
 
+            Console.WriteLine("[ " + Player.Name + " ]");
+            Console.WriteLine();
+
             Console.Write("Level :   " + "\t");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(character.LV);
@@ -155,16 +158,19 @@ namespace TextGame2
 
             Console.WriteLine("\t" + "\t" + "Chad" + "\t" + " ( 전사 )");
 
-            Console.WriteLine();
-
             Console.Write("공격력 : " + "\t");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(character.Attack);
+            Console.Write(character.Attack);
+            if(Player.PlusAttack != 0) Console.WriteLine("\t" + "(+" + Player.PlusAttack + ")");
+            else Console.WriteLine();
             Console.ResetColor();
+            
 
             Console.Write("방어력 : " + "\t");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(character.Defense);
+            Console.Write(character.Defense);
+            if (Player.PlusAttack != 0) Console.WriteLine("\t" + "(+" + Player.PlusDefense + ")");
+            else Console.WriteLine();
             Console.ResetColor();
 
             Console.Write("체력 :    " + "\t");
