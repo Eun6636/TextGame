@@ -6,8 +6,7 @@ namespace TextGame2
     class Program
     {
         static int Map = 0;
-        //static bool Purchase = false; //상점에서 아이템 구매중인지 여부
-        //static bool Wear = false;
+        static int UntilLevelUP = 0;  //레벨업 스택
 
 
         static Character Player = new Character();
@@ -35,9 +34,6 @@ namespace TextGame2
 
         }
 
-
-
-
         class item  //방어구 아이템
         {
             public string Name;
@@ -49,7 +45,7 @@ namespace TextGame2
 
         }
 
-
+        
 
         //아이템 생성------------------------------------
 
@@ -291,6 +287,7 @@ namespace TextGame2
                 //여기서 실질적인 값을 올려줘야 할듯
                 Player.HP -= MinusHP;
                 Player.Gold += GetGold;
+                UntilLevelUP++;  //레벨업 스택
 
                 Map = 0;
             }
@@ -369,6 +366,16 @@ namespace TextGame2
             Console.WriteLine("============================");
             Console.WriteLine("          활동 선택 ");
             Console.WriteLine("============================");
+
+
+            //레벨업 체크
+            Console.ForegroundColor = ConsoleColor.Blue;
+            int thisLV = Player.LV; //이전 레벨 저장
+            if(LevelUP())
+            {
+                Console.WriteLine("축하합니다 레벨업 되셨습니다 ({0}LV -> {1}LV)", thisLV,Player.LV);
+            }
+
 
 
             Console.ForegroundColor = ConsoleColor.Yellow; //글자 색 변경
@@ -804,6 +811,7 @@ namespace TextGame2
             }
 
         }
+
         static void Purchase() //구매
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -1138,7 +1146,29 @@ namespace TextGame2
         }
 
 
+
+
         //----------------------------------------------
+
+
+
+        static bool LevelUP()  //레벨업 처리
+        {
+            int a = Player.LV;
+
+            if (a <= UntilLevelUP)
+            {
+                Player.LV++;
+                Player.Defense += 4;
+                Player.Attack += 2;
+
+                UntilLevelUP = -a;
+                return true;
+            }
+
+            if (UntilLevelUP != 0) LevelUP();  //0이 아니라면
+            return false;
+        }
 
 
         static bool Exception() //예외처리
