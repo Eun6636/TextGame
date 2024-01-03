@@ -691,6 +691,10 @@ namespace TextGame2
             It1.Add(new item { Name = "수련자 갑옷    ", Plusstat = 5, Explanation = "수련에 도움을 주는 갑옷입니다.    ", Price = 1000 });
             It1.Add(new item { Name = "무쇠갑옷       ", Plusstat = 9, Explanation = "무쇠로 만들어져 튼튼한 갑옷입니다.", Price = 2200 });
             It1.Add(new item { Name = "스파르타의 갑옷", Plusstat = 15, Explanation = "무쇠로 만들어져 튼튼한 갑옷입니다.", Price = 3500 });
+            It1.Add(new item { Name = "응징갑옷       ", Plusstat = 25, Explanation = "응징의 가호로 이루어진 갑옷입니다.", Price = 4300 });
+            It1.Add(new item { Name = "죽어가는 개발자의 옷", Plusstat = 45, Explanation = "제 4의 벽을 넘은 힘의 천으로 만들어졌습니다", Price = 6500 });
+
+
         }
 
         static void CreateItem2(List<item> It2) //공격력 아이템 셋팅 함수
@@ -698,6 +702,9 @@ namespace TextGame2
             It2.Add(new item { Name = "낡은 검        ", Plusstat = 2, Explanation = "쉽게 볼 수 있는 낡은 검입니다.     ", Price = 600 });
             It2.Add(new item { Name = "청동 도끼      ", Plusstat = 5, Explanation = "어디선가 사용됐던 거 같은 도끼입니다.", Price = 1500 });
             It2.Add(new item { Name = "스파르타의 창  ", Plusstat = 7, Explanation = "스파르타의 전사들이 사용했다는 전설의 창입니다.", Price = 2700 });
+            It2.Add(new item { Name = "응징 건틀렛    ", Plusstat = 18, Explanation = "응징의 힘이 내려지는 낯입니다.", Price = 3800 });
+            It2.Add(new item { Name = "고뇌하는 개발자의 낯", Plusstat = 40, Explanation = "제 4의 벽을 넘은 소재의 낯입니다.", Price = 6200 });
+
         }
 
 
