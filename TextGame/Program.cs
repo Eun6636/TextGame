@@ -144,7 +144,7 @@ namespace TextGame2
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine();
-            Console.WriteLine("심신의 안정을 느끼는 중~ ♬ (っ˘▿˘)(˘▿˘)˘▿˘ς)");
+            Console.WriteLine("심신의 안정을 느끼는 중~ ♬ (っ˘^˘)(˘∇˘)˘^˘)っ");
 
             Console.WriteLine();
 
@@ -277,6 +277,7 @@ namespace TextGame2
 
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
+            Console.WriteLine("1. 계속하기");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -290,6 +291,16 @@ namespace TextGame2
                 UntilLevelUP++;  //레벨업 스택
 
                 Map = 0;
+            }
+            else if(userInput == "1")
+            {
+                //여기서 실질적인 값을 올려줘야 할듯
+                Player.HP -= MinusHP;
+                Player.Gold += GetGold;
+                UntilLevelUP++;  //레벨업 스택
+
+                Console.Clear();
+                DungeonStart();
             }
             else
             {
@@ -1154,19 +1165,26 @@ namespace TextGame2
 
         static bool LevelUP()  //레벨업 처리
         {
-            int a = Player.LV;
-
-            if (a <= UntilLevelUP)
+            if (Player.LV <= UntilLevelUP)
             {
                 Player.LV++;
                 Player.Defense += 4;
                 Player.Attack += 2;
 
-                UntilLevelUP = -a;
-                return true;
-            }
+                UntilLevelUP -= Player.LV;
 
-            if (UntilLevelUP != 0) LevelUP();  //0이 아니라면
+                if (Player.LV <= UntilLevelUP)
+                {
+                    Player.LV++;
+                    Player.Defense += 4;
+                    Player.Attack += 2;
+
+                    UntilLevelUP -= Player.LV;
+                }
+                return true;
+
+            }
+            
             return false;
         }
 
