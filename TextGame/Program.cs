@@ -95,7 +95,9 @@ namespace TextGame2
                     case 4: //던전
                         DungeonStart();
                         break;
-
+                    case 5: //휴식하기
+                        Rest();
+                        break;
                     default:
                         Map = 0;
                         break;
@@ -106,6 +108,98 @@ namespace TextGame2
 
 
         // ----------------------------------------------- 함수
+
+
+
+        static void Rest() //휴식
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("휴식하기");
+            Console.ResetColor();
+            Console.WriteLine("500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {0} G)",Player.Gold);
+            Console.WriteLine();
+
+            Console.WriteLine("1. 휴식하기");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+
+            string userInput = Console.ReadLine();
+
+            if (userInput == "0") //나가기
+            {
+                Map = 0;
+            }
+            else if (userInput == "1")
+            {
+                Console.Clear();
+                //휴식창
+                Restroom();
+            }
+            else
+            {
+                Fail();
+                Rest();
+            }
+        }
+
+        static void Restroom()  //휴식창
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine();
+            Console.WriteLine("심신의 안정을 느끼는 중~ ♬ (っ˘▿˘)(˘▿˘)˘▿˘ς)");
+
+            Console.WriteLine();
+
+            Console.WriteLine("     (/￣∇￣)/");
+            Console.WriteLine("	        ✧");
+            Console.WriteLine("	         ☆∴**");
+            Console.WriteLine("	          *‧̩̣ *");
+            Console.WriteLine("	          ✧*+♬ﾟ★｡");
+            Console.WriteLine("	         　☆+♡ °*. ♬");
+            Console.WriteLine("	           ♬｡·*✧♬  ｡  *  °");
+            Console.WriteLine("	           　♬ *.｡☆.★　♬*");
+            Console.WriteLine("	           　* ☆ ✧♬♡ *. ★  ♬  *  .");
+            Console.WriteLine("	           　　 *　★ ✧o♡  *  ｡    °");
+            Console.WriteLine("	           　　*✧　º☆ ✧ * ★ ♬   * °*");
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("체력 {0} -> 100", Player.HP);
+            Console.WriteLine("Gold {0} -> {1}", Player.Gold, Player.Gold - 500);
+            Console.ResetColor();
+
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            string userInput = Console.ReadLine();
+
+            if (userInput == "0") //나가기
+            {
+                Map = 0;
+
+                //실질적 HP증가 및 Gold 감소
+                Player.HP = 100;
+                Player.Gold -= 500;
+            }
+            else
+            {
+                Fail();
+                Restroom();
+            }
+
+        }
+
+
+
+
+
+
+
+
 
         static void DungeonStart()  //던전 입장 화면
         {
@@ -284,6 +378,7 @@ namespace TextGame2
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전입장");
+            Console.WriteLine("5. 휴식하기");
 
             Console.ResetColor();//  색상 리셋
 
@@ -1037,7 +1132,7 @@ namespace TextGame2
             It2.Add(new item { Name = "청동 도끼           ", Plusstat = 5, Explanation = "어디선가 사용됐던 거 같은 도끼입니다.          ", Price = 1500 });
             It2.Add(new item { Name = "스파르타의 창       ", Plusstat = 7, Explanation = "스파르타의 전사들이 사용했다는 전설의 창입니다.", Price = 2700 });
             It2.Add(new item { Name = "응징 건틀렛         ", Plusstat = 18, Explanation = "응징의 힘이 내려지는 건틀렛입니다.            ", Price = 3800 });
-            It2.Add(new item { Name = "강아지의 꼬리         ", Plusstat = 32, Explanation = "귀여움에 적이 사망합니다                    ", Price = 6200 });
+            It2.Add(new item { Name = "강아지의 꼬리       ", Plusstat = 32, Explanation = "귀여움에 적이 사망합니다                    ", Price = 6200 });
             It2.Add(new item { Name = "고뇌하는 개발자의 낫", Plusstat = 50, Explanation = "제 4의 벽을 넘은 소재의 낫입니다.             ", Price = 10200 });
 
         }
