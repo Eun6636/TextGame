@@ -343,6 +343,9 @@ namespace TextGame2
 
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
             //-----------------------------------------
 
 
@@ -538,6 +541,7 @@ namespace TextGame2
                 Console.WriteLine();
 
                 Console.WriteLine("1. 아이템 구매");
+                Console.WriteLine("1. 아이템 판매");
                 Console.WriteLine("0. 나가기");
 
                 Console.WriteLine();
@@ -554,6 +558,11 @@ namespace TextGame2
                     Purchase = true;
                     Console.Clear();
                     Store();
+                }
+                else if (userInput =="2")
+                {
+                    Console.Clear();
+                    sale();
                 }
                 else
                 {
@@ -681,7 +690,141 @@ namespace TextGame2
 
         }
 
+        static void sale()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("상점 - 아이템 판매");
+            Console.ResetColor();
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+            Console.WriteLine();
 
+
+            Console.WriteLine("[보유 골드]");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("{0}  ", Player.Gold);
+            Console.ResetColor();
+            Console.WriteLine();
+
+            Console.WriteLine("[아이템 목록]");
+
+
+
+
+            //화면 배치 -----------------
+            int i = 1;
+            List<item> Foritem = new List<item>(); //장착 하기를 위해
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            foreach (var item in Player.haveitem1)  //방어구 반복
+            {
+                Foritem.Add(item);
+
+                Console.WriteLine("- " + i + " [E]    " + item.Name + "\t |  방어력  " +
+                        item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + discount(item.Price));
+
+                //장착 + 가진것 해제
+
+
+
+            }
+
+            foreach (var item in Player.haveitem2)
+            {
+                Foritem.Add(item);
+
+                Console.WriteLine("- " + i + " [E]    " + item.Name + "\t |  방어력  " +
+                        item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + discount(item.Price));
+
+                //장착 + 가진것 해제
+            }
+            Console.ResetColor();
+            //----------------------------------------------------------------------
+
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int userInput = int.Parse(Console.ReadLine());
+            if (userInput == 0)
+            {
+                Map = 0;
+            }
+            else if (Foritem[userInput - 1] == null) //존재 하지 않을 경우
+            {
+                Fail();
+                sale();
+            }
+            else
+            {
+                int ThisG = discount(Foritem[userInput - 1].Price); 
+                if(Player.Gold >= ThisG) //골드가 된다면
+                {
+                    foreach (var item in Player.haveitem1) //이름을 찾아 장착, 가진것 해제
+                    {
+                        if (Foritem[userInput - 1].Name == item.Name)
+                        {
+
+
+                            if (item.Setting) //장착이 되있었다면
+                            {
+                                item.Setting = false;
+                            }
+
+                            item.Have = false; //가진것 해제
+                            Player.PlusDefense += item.Plusstat;
+                        }
+                    }
+                    foreach (var item in Player.haveitem2)//이름을 찾아 장착, 가진것 해제
+                    {
+                        if (Foritem[userInput - 1].Name == item.Name)
+                        {
+                            if (item.Setting) //장착이 되있었다면
+                            {
+                                item.Setting = false;
+                            }
+
+                            item.Have = false; //가진것 해제
+                            Player.PlusAttack += item.Plusstat;
+                        }
+                    }
+
+                    Console.Clear();
+
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("***판매되었습니다***");
+                    Console.WriteLine("***판매되었습니다***");
+                    Console.WriteLine("***판매되었습니다***");
+                    Console.ResetColor();
+
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.Clear();
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("***골드가 부족합니다***");
+                    Console.WriteLine("***골드가 부족합니다***");
+                    Console.WriteLine("***골드가 부족합니다***");
+                    Console.ResetColor();
+
+                    Console.WriteLine();
+                }
+
+                //골드 빼기
+
+                 //85% 빼기
+
+
+                
+
+                sale();
+            }
+            
+
+        }
 
 
 
@@ -740,6 +883,14 @@ namespace TextGame2
             Console.WriteLine();
         }
 
+        static int discount(int a)
+        {
+            float b = a * 0.85f;
+
+
+            return (int)b;
+
+        }
     }
 }
 
