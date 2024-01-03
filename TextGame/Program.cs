@@ -20,7 +20,7 @@ namespace TextGame2
             public int Attack = 10;
             public int Defense = 5;
             public int HP = 100;
-            public int Gold = 3500; //원랜 1500
+            public int Gold = 1500; //원랜 1500
             //플레이어가 가지고 있는 아이템 인벤토리에서 사용
             public List<item> haveitem1 = new List<item>();  //방어구
             public List<item> haveitem2 = new List<item>();  //무구
@@ -60,8 +60,6 @@ namespace TextGame2
 
         static void Main(string[] args)
         {
-
-
             CreateItem1(Armors);
             CreateItem2(Weapons);
 
@@ -74,12 +72,9 @@ namespace TextGame2
             Console.Clear(); //이전 내용 지우기
             Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
             Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
-
             StartMap();
-
             while (true) // 조건 수정
             {
-
                 Console.Clear(); //이전 내용 지우기
                 switch (Map)
                 {
@@ -97,22 +92,182 @@ namespace TextGame2
                     case 3: //상점
                         Store();
                         break;
+                    case 4: //던전
+                        DungeonStart();
+                        break;
 
                     default:
+                        Map = 0;
                         break;
                 }
-
-
-
             }
-
-
-
         }
 
 
 
         // ----------------------------------------------- 함수
+
+        static void DungeonStart()  //던전 입장 화면
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("던전입장");
+            Console.ResetColor();
+            Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+            Console.WriteLine();
+
+
+            Console.WriteLine("1. 쉬운 던전     | 방어력 5 이상 권장");
+            Console.WriteLine("2. 일반 던전     | 방어력 15 이상 권장");
+            Console.WriteLine("3. 어려운 던전   | 방어력 30 이상 권장");
+            Console.WriteLine("4. 스파르타 던전 | 방어력 65 이상 권장");
+
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            string userInput = Console.ReadLine();
+
+            switch (userInput)
+            {
+                case "0":
+                    Map = 0;
+                    break;
+                case "1":
+                    DungeonLogic("쉬운 던전", 5, 1000);
+                    break;
+                case "2":
+                    DungeonLogic("일반 던전", 15, 1700);
+                    break;
+                case "3":
+                    DungeonLogic("어려운 던전", 30, 2500);
+                    break;
+                case "4":
+                    DungeonLogic("어려운 던전", 65, 3300);
+                    break;
+
+                default:
+                    Fail();
+                    DungeonStart();
+                    break;
+            }
+
+        }
+
+        static void DungeonClear(string DName, int RecommendedDPS, int DG)  //던전클리어 화면
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("던전 클리어");
+            Console.ResetColor();
+            Console.WriteLine("축하합니다!!");
+            Console.WriteLine("{0}을 클리어 하였습니다.", DName);
+            Console.WriteLine();
+
+            Console.WriteLine("[탐험 결과]");
+
+            //------------------------------------
+
+            int PlayerDPS = Player.PlusDefense + Player.Defense;
+            int PlayerAT = Player.PlusAttack + Player.Attack;
+            
+            Random rend = new Random();
+
+            //깎는 수치, 플레이어 방어력이 높을수록 깎는 수치가 낮아짐
+            int MinusHP = (rend.Next(20, 36) + (RecommendedDPS - PlayerDPS));  
+            int GetGold = DG + (int)(PlayerAT * rend.NextDouble() * (0.25f - 0.1f) + 0.1f);
+
+
+            //---------------------------------------------------------------
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("체력 {0} -> {1}", Player.HP, Player.HP - MinusHP);
+            Console.WriteLine("Gold {0} -> {1}", Player.Gold, Player.Gold + GetGold);
+            Console.ResetColor();
+
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            string userInput = Console.ReadLine();
+            if (userInput == "0")
+            {
+
+                //여기서 실질적인 값을 올려줘야 할듯
+                Player.HP -= MinusHP;
+                Player.Gold += GetGold;
+
+                Map = 0;
+            }
+            else
+            {
+                Fail();
+                DungeonClear(DName, RecommendedDPS, DG);
+            }
+
+        }
+
+
+        static void DungeonFail()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("던전 실패 ㅠㅠ");
+            Console.ResetColor();
+            Console.WriteLine("더 강해져서 돌아오세요~");
+            Console.WriteLine();
+
+            
+
+            Console.WriteLine("[탐험 결과]");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("체력 {0} -> {1}", Player.HP, Player.HP - (int)(Player.HP * 0.5f)); //50%
+            Console.ResetColor();
+
+
+            Console.WriteLine();
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            string userInput = Console.ReadLine();
+            if (userInput == "0")
+            {
+
+                //여기서 실질적인 값을 올려줘야 할듯
+                Player.HP -= Player.HP - (int)(Player.HP * 0.5f);
+
+                Map = 0;
+            }
+            else
+            {
+                Fail();
+                DungeonFail();
+            }
+        }
+
+        static void DungeonLogic(string DName, int RecommendedDPS, int DG)  //던전 클리어 여부 및 계산
+        {
+            Console.Clear();
+            int PlayerDPS = Player.PlusDefense + Player.Defense;
+
+            if(RecommendedDPS > PlayerDPS)
+            {
+                Random rend = new Random();
+
+
+                if (rend.Next(1, 11) < 7)   //6이하일경우
+                {
+                    DungeonFail();   
+                }
+            }
+            else
+            {
+                DungeonClear(DName, RecommendedDPS, DG);
+            }
+        }
+
+
         static void StartMap()
         {
 
@@ -128,6 +283,7 @@ namespace TextGame2
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
+            Console.WriteLine("4. 던전입장");
 
             Console.ResetColor();//  색상 리셋
 
@@ -869,7 +1025,8 @@ namespace TextGame2
             It1.Add(new item { Name = "무쇠갑옷            ", Plusstat = 9, Explanation = "무쇠로 만들어져 튼튼한 갑옷입니다.            ", Price = 2200 });
             It1.Add(new item { Name = "스파르타의 갑옷     ", Plusstat = 15, Explanation = "무쇠로 만들어져 튼튼한 갑옷입니다.           ", Price = 3500 });
             It1.Add(new item { Name = "응징갑옷            ", Plusstat = 25, Explanation = "응징의 가호로 이루어진 갑옷입니다.           ", Price = 4300 });
-            It1.Add(new item { Name = "죽어가는 개발자의 옷", Plusstat = 45, Explanation = "제 4의 벽을 넘은 힘의 천으로 만들어졌습니다", Price = 6500 });
+            It1.Add(new item { Name = "강아지 후드티       ", Plusstat = 40, Explanation = "귀여움에 적이 때릴 수 없습니다               ", Price = 6500 });
+            It1.Add(new item { Name = "죽어가는 개발자의 옷", Plusstat = 60, Explanation = "제 4의 벽을 넘은 힘의 천으로 만들어졌습니다  ", Price = 11200 });
 
 
         }
@@ -879,8 +1036,9 @@ namespace TextGame2
             It2.Add(new item { Name = "낡은 검             ", Plusstat = 2, Explanation = "쉽게 볼 수 있는 낡은 검입니다.                 ", Price = 600 });
             It2.Add(new item { Name = "청동 도끼           ", Plusstat = 5, Explanation = "어디선가 사용됐던 거 같은 도끼입니다.          ", Price = 1500 });
             It2.Add(new item { Name = "스파르타의 창       ", Plusstat = 7, Explanation = "스파르타의 전사들이 사용했다는 전설의 창입니다.", Price = 2700 });
-            It2.Add(new item { Name = "응징 건틀렛         ", Plusstat = 18, Explanation = "응징의 힘이 내려지는 낯입니다.                ", Price = 3800 });
-            It2.Add(new item { Name = "고뇌하는 개발자의 낯", Plusstat = 40, Explanation = "제 4의 벽을 넘은 소재의 낯입니다.           ", Price = 6200 });
+            It2.Add(new item { Name = "응징 건틀렛         ", Plusstat = 18, Explanation = "응징의 힘이 내려지는 건틀렛입니다.            ", Price = 3800 });
+            It2.Add(new item { Name = "강아지의 꼬리         ", Plusstat = 32, Explanation = "귀여움에 적이 사망합니다                    ", Price = 6200 });
+            It2.Add(new item { Name = "고뇌하는 개발자의 낫", Plusstat = 50, Explanation = "제 4의 벽을 넘은 소재의 낫입니다.             ", Price = 10200 });
 
         }
 
@@ -940,6 +1098,7 @@ namespace TextGame2
 
             sale();
         }
+
 
     }
 }
