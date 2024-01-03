@@ -1040,6 +1040,8 @@ namespace TextGame2
 
                     Console.WriteLine("- " + i + item.Name + "\t |  방어력  " +
                             item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + discount(item.Price));
+
+                    i++;
                 }
 
            
@@ -1056,6 +1058,8 @@ namespace TextGame2
 
                     Console.WriteLine("- " + i + item.Name + "\t |  공격력  " +
                             item.Plusstat + "  |" + "\t" + item.Explanation + "\t |" + "\t" + discount(item.Price));
+
+                    i++;
                 }
 
             
