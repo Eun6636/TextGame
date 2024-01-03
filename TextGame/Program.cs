@@ -20,10 +20,11 @@ namespace TextGame2
             public int Attack = 10;
             public int Defense = 5;
             public int HP = 100;
-            public int Gold = 1500;
+            public int Gold = 3500; //원랜 1500
             //플레이어가 가지고 있는 아이템 인벤토리에서 사용
             public List<item> haveitem1 = new List<item>();  //방어구
             public List<item> haveitem2 = new List<item>();  //무구
+
 
             //추가 공방 설정
             public int PlusAttack = 0;
@@ -169,7 +170,7 @@ namespace TextGame2
             Console.Write("방어력 : " + "\t");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(character.Defense);
-            if (Player.PlusAttack != 0) Console.WriteLine("\t" + "(+" + Player.PlusDefense + ")");
+            if (Player.PlusDefense != 0) Console.WriteLine("\t" + "(+" + Player.PlusDefense + ")");
             else Console.WriteLine();
             Console.ResetColor();
 
@@ -258,11 +259,13 @@ namespace TextGame2
                 }
             }
 
+
+            
             Console.WriteLine();
             Console.WriteLine("1. 장착관리");
             Console.WriteLine("0. 나가기");
 
-
+            //----------------------------------------------------화면
 
 
 
@@ -315,11 +318,11 @@ namespace TextGame2
                 else //장착일 경우
                 {
 
-                    Console.WriteLine("- " + i + " [E]    " + item.Name + "\t |  방어력  " +
+                    Console.WriteLine("- " + i + " [E] " + item.Name + "\t |  방어력  " +
                         item.Plusstat + "  |" + "\t" + item.Explanation);
 
                 }
-
+                i++;
                 
             }
 
@@ -328,15 +331,17 @@ namespace TextGame2
                 Foritem.Add(item);
                 if (!item.Setting) //장착이 아닐경우
                 {
-                    Console.WriteLine("- " + i + "   " + item.Name + "\t |  방어력  " +
+                    Console.WriteLine("- " + i + "   " + item.Name + "\t |  공격력  " +
                            item.Plusstat + "  |" + "\t" + item.Explanation);
                 }
                 else //장착일 경우
                 {
-                    Console.WriteLine("- " + i + " [E]    " + item.Name + "\t |  공격력  " +
+                    Console.WriteLine("- " + i + " [E] " + item.Name + "\t |  공격력  " +
                         item.Plusstat + "  |" + "\t" + item.Explanation);
 
                 }
+
+                i++;
             }
             Console.ResetColor();
 
@@ -346,7 +351,7 @@ namespace TextGame2
 
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
-            //-----------------------------------------
+            //----------------------------------------------------------------------
 
 
             int userInput = int.Parse(Console.ReadLine());
@@ -354,7 +359,7 @@ namespace TextGame2
             {
                 Map = 0;
             }
-            else if (Foritem[userInput-1] == null) //존재 하지 않을 경우
+            else if (userInput <= 0 || userInput > Foritem.Count) // 입력이 유효한 범위를 벗어나면
             {
                 Fail();
                 Mounting();
@@ -369,7 +374,7 @@ namespace TextGame2
                     {
                         item.Setting = false;
 
-                        Player.PlusDefense -= item.Plusstat; //추가 스테이터스 삭제
+                        Player.PlusDefense = 0; //추가 스테이터스 삭제
                     }
                 }
                 foreach (var item in Player.haveitem2)
@@ -378,7 +383,7 @@ namespace TextGame2
                     {
                         item.Setting = false;
 
-                        Player.PlusDefense -= item.Plusstat; //추가 스테이터스 삭제
+                        Player.PlusDefense = 0; //추가 스테이터스 삭제
                     }
                 }
 
@@ -401,17 +406,40 @@ namespace TextGame2
                 {
                     if(Foritem[userInput - 1].Name == item.Name)
                     {
+
+                        foreach (var item2 in Player.haveitem1)  //본래건 장착 해제
+                        {
+                            if(item2.Setting)
+                            {
+                                item2.Setting = false;
+                            }
+                        }
+
+
                         item.Setting = true;
 
-                        Player.PlusDefense += item.Plusstat; //추가 스테이터스
+                        Player.PlusDefense = item.Plusstat; //추가 스테이터스
+
+
+
                     }
                 }
                 foreach (var item in Player.haveitem2)
                 {
                     if (Foritem[userInput - 1].Name == item.Name)
                     {
+                        foreach (var item2 in Player.haveitem2)
+                        {
+                            if (item2.Setting)
+                            {
+                                item2.Setting = false;
+
+                            }
+                        }
+
+
                         item.Setting = true;
-                        Player.PlusAttack += item.Plusstat; //추가 스테이터스
+                        Player.PlusAttack = item.Plusstat; //추가 스테이터스
                     }
                 }
 
@@ -606,7 +634,7 @@ namespace TextGame2
                 Store();
 
             }
-            else if (Foritem[userInput - 1] == null)//잘못된 숫자
+            else if (userInput <= 0 || userInput > Foritem.Count) // 입력이 유효한 범위를 벗어나면
             {
                 Fail();
                 Purchase();
@@ -777,7 +805,7 @@ namespace TextGame2
                 Console.Clear();
                 Store();
             }
-            else if (Foritem[userInput - 1] == null) //존재 하지 않을 경우
+            else if (userInput <= 0 || userInput > Foritem.Count) // 입력이 유효한 범위를 벗어나면
             {
                 Fail();
                 sale();
