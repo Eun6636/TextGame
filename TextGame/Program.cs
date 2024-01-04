@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Newtonsoft.Json;
 
 namespace TextGame2
@@ -73,14 +74,13 @@ namespace TextGame2
             {
                 Console.WriteLine("당신의 이름을 알려주세요.");
                 Player.Name = Console.ReadLine();  //캐릭터 이름까지 설정
+
+                story();
             }
+
             
 
 
-
-            Console.Clear(); //이전 내용 지우기
-            Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
-            Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
             StartMap();
             while (true) // 조건 수정
             {
@@ -158,20 +158,24 @@ namespace TextGame2
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine();
             Console.WriteLine("심신의 안정을 느끼는 중~ ♬ (っ˘^˘)(˘∇˘)˘^˘)っ");
-
+            Thread.Sleep(2000);
             Console.WriteLine();
 
             Console.WriteLine("     (/￣∇￣)/");
             Console.WriteLine("	        ✧");
             Console.WriteLine("	         ☆∴**");
-            Console.WriteLine("	          *‧̩̣ *");
+            Thread.Sleep(500);
+            Console.WriteLine("	          *‧̩̣ *");;
             Console.WriteLine("	          ✧*+♬ﾟ★｡");
             Console.WriteLine("	         　☆+♡ °*. ♬");
+            Thread.Sleep(500);
             Console.WriteLine("	           ♬｡·*✧♬  ｡  *  °");
             Console.WriteLine("	           　♬ *.｡☆.★　♬*");
             Console.WriteLine("	           　* ☆ ✧♬♡ *. ★  ♬  *  .");
+            Thread.Sleep(500);
             Console.WriteLine("	           　　 *　★ ✧o♡  *  ｡    °");
             Console.WriteLine("	           　　*✧　º☆ ✧ * ★ ♬   * °*");
+            Thread.Sleep(1500);
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -412,8 +416,6 @@ namespace TextGame2
 
             Exception();
         }
-
-
 
 
         static void State(Character character)
@@ -1138,6 +1140,72 @@ namespace TextGame2
             }
 
 
+        }
+
+
+        static void story()
+        {
+            Console.Clear(); //이전 내용 지우기
+            Console.WriteLine("스파르타 마을에 오신 당신, 환영합니다.");
+            Console.WriteLine();
+            Thread.Sleep(1500);
+            Console.WriteLine("현재 이 마을엔 악성코드가 가득합니다");
+            Console.WriteLine();
+            Thread.Sleep(1500);
+            Console.WriteLine("이대로 스파르타 마을이 없어진다면 응징님의 스파르타 감정이 사라져 버릴거에요!");
+            Console.WriteLine();
+            Thread.Sleep(1500);
+            Console.WriteLine("그렇게 되면 이 마을의 주인인 응징님께서 도저히 공부를 할 수가 없어요!");
+            Console.WriteLine();
+            Thread.Sleep(1500);
+            Console.WriteLine("저희 마을을 구해주시겠어요?");
+            Console.WriteLine();
+
+            Console.WriteLine("도와주시겠습니까? (y/n)");
+
+            string input = Console.ReadLine();
+
+            Help(input);
+
+        }
+
+        static void Help(string i)
+        {
+            if (i =="y")
+            {
+                Console.Clear();
+            }
+            else if (i == "n")
+            {
+                Console.Clear();
+                Console.WriteLine("..");
+                Console.WriteLine();
+                Thread.Sleep(500);
+                Console.WriteLine("...");
+                Console.WriteLine();
+                Thread.Sleep(500);
+                Console.WriteLine("....");
+                Console.WriteLine();
+                Thread.Sleep(500);
+                Console.WriteLine("매정해....");
+                Thread.Sleep(1500);
+                //콘솔 종료
+                Environment.Exit(0);
+            }
+            else
+            {
+                Console.Clear();
+                Thread.Sleep(1500);
+                Console.WriteLine();
+                Console.WriteLine("잘못된 입력으로 마을이 멀어집니다.");
+                Thread.Sleep(1500);
+
+                Environment.Exit(0);
+            }
+
+
+            Thread.Sleep(1500);
+            Console.Clear();
         }
 
 
