@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace TextGame2
 {
@@ -8,6 +10,7 @@ namespace TextGame2
         static int Map = 0;
         static int UntilLevelUP = 0;  //레벨업 스택
 
+        static bool Rename = false;
 
         static Character Player = new Character();
 
@@ -41,11 +44,11 @@ namespace TextGame2
             public string Explanation; //아이템 설명
             public int Price;
             public bool Have;  //자동으로 false
-            public bool Setting;  //장착여부
+            public bool Setting;  //장착여부  
 
         }
 
-        
+
 
         //아이템 생성------------------------------------
 
@@ -56,14 +59,24 @@ namespace TextGame2
 
         static void Main(string[] args)
         {
+            Player = Load();
+
+            // 프로세스 종료 이벤트 핸들러 등록
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+
             CreateItem1(Armors);
             CreateItem2(Weapons);
 
             //---------------------------------------------
-            Console.WriteLine("당신의 이름을 알려주세요.");
+
+            if(Rename)   //처음인 경우
+            {
+                Console.WriteLine("당신의 이름을 알려주세요.");
+                Player.Name = Console.ReadLine();  //캐릭터 이름까지 설정
+            }
+            
 
 
-            Player.Name = Console.ReadLine();  //캐릭터 이름까지 설정
 
             Console.Clear(); //이전 내용 지우기
             Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
@@ -112,7 +125,7 @@ namespace TextGame2
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("휴식하기");
             Console.ResetColor();
-            Console.WriteLine("500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {0} G)",Player.Gold);
+            Console.WriteLine("500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {0} G)", Player.Gold);
             Console.WriteLine();
 
             Console.WriteLine("1. 휴식하기");
@@ -191,12 +204,6 @@ namespace TextGame2
 
 
 
-
-
-
-
-
-
         static void DungeonStart()  //던전 입장 화면
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -260,11 +267,11 @@ namespace TextGame2
 
             int PlayerDPS = Player.PlusDefense + Player.Defense;
             int PlayerAT = Player.PlusAttack + Player.Attack;
-            
+
             Random rend = new Random();
 
             //깎는 수치, 플레이어 방어력이 높을수록 깎는 수치가 낮아짐
-            int MinusHP = (rend.Next(20, 36) + (RecommendedDPS - PlayerDPS));  
+            int MinusHP = (rend.Next(20, 36) + (RecommendedDPS - PlayerDPS));
             int GetGold = DG + (int)(PlayerAT * rend.NextDouble() * (0.25f - 0.1f) + 0.1f);
 
 
@@ -292,7 +299,7 @@ namespace TextGame2
 
                 Map = 0;
             }
-            else if(userInput == "1")
+            else if (userInput == "1")
             {
                 //여기서 실질적인 값을 올려줘야 할듯
                 Player.HP -= MinusHP;
@@ -319,7 +326,7 @@ namespace TextGame2
             Console.WriteLine("더 강해져서 돌아오세요~");
             Console.WriteLine();
 
-            
+
 
             Console.WriteLine("[탐험 결과]");
             Console.ForegroundColor = ConsoleColor.Red;
@@ -353,14 +360,14 @@ namespace TextGame2
             Console.Clear();
             int PlayerDPS = Player.PlusDefense + Player.Defense;
 
-            if(RecommendedDPS > PlayerDPS)
+            if (RecommendedDPS > PlayerDPS)
             {
                 Random rend = new Random();
 
 
                 if (rend.Next(1, 11) < 7)   //6이하일경우
                 {
-                    DungeonFail();   
+                    DungeonFail();
                 }
             }
             else
@@ -382,9 +389,9 @@ namespace TextGame2
             //레벨업 체크
             Console.ForegroundColor = ConsoleColor.Blue;
             int thisLV = Player.LV; //이전 레벨 저장
-            if(LevelUP())
+            if (LevelUP())
             {
-                Console.WriteLine("축하합니다 레벨업 되셨습니다 ({0}LV -> {1}LV)", thisLV,Player.LV);
+                Console.WriteLine("축하합니다 레벨업 되셨습니다 ({0}LV -> {1}LV)", thisLV, Player.LV);
             }
 
 
@@ -431,10 +438,10 @@ namespace TextGame2
             Console.Write("공격력 : " + "\t");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(character.Attack);
-            if(Player.PlusAttack != 0) Console.WriteLine("\t" + "(+" + Player.PlusAttack + ")");
+            if (Player.PlusAttack != 0) Console.WriteLine("\t" + "(+" + Player.PlusAttack + ")");
             else Console.WriteLine();
             Console.ResetColor();
-            
+
 
             Console.Write("방어력 : " + "\t");
             Console.ForegroundColor = ConsoleColor.Red;
@@ -489,7 +496,7 @@ namespace TextGame2
 
             foreach (var item in Player.haveitem1)  //방어구 반복
             {
-                if(!item.Setting) //장착이 아닐경우
+                if (!item.Setting) //장착이 아닐경우
                 {
                     Console.WriteLine("- " + "   " + item.Name + "\t |  방어력  " +
                            item.Plusstat + "  |" + "\t" + item.Explanation);
@@ -501,7 +508,7 @@ namespace TextGame2
                     Console.Write("E");
                     Console.ResetColor();
                     Console.Write("]    ");
-                    Console.WriteLine("   " + item.Name + "\t |  방어력  " + 
+                    Console.WriteLine("   " + item.Name + "\t |  방어력  " +
                         item.Plusstat + "  |" + "\t" + item.Explanation);
 
                 }
@@ -524,12 +531,12 @@ namespace TextGame2
                     Console.WriteLine("   " + item.Name + "\t |  공격력  " +
                         item.Plusstat + "  |" + "\t" + item.Explanation);
 
-                   
+
                 }
             }
 
 
-            
+
             Console.WriteLine();
             Console.WriteLine("1. 장착관리");
             Console.WriteLine("0. 나가기");
@@ -581,7 +588,7 @@ namespace TextGame2
                 if (!item.Setting) //장착이 아닐경우
                 {
 
-                    Console.WriteLine("- " + i  + "   " + item.Name + "\t |  방어력  " +
+                    Console.WriteLine("- " + i + "   " + item.Name + "\t |  방어력  " +
                            item.Plusstat + "  |" + "\t" + item.Explanation);
                 }
                 else //장착일 경우
@@ -592,7 +599,7 @@ namespace TextGame2
 
                 }
                 i++;
-                
+
             }
 
             foreach (var item in Player.haveitem2)
@@ -637,7 +644,7 @@ namespace TextGame2
             {
                 //장착해제
                 //플레이어 추가 공방어력 삭제
-                foreach (var item in Player.haveitem1) 
+                foreach (var item in Player.haveitem1)
                 {
                     if (Foritem[userInput - 1].Name == item.Name)
                     {
@@ -673,12 +680,12 @@ namespace TextGame2
             {
                 foreach (var item in Player.haveitem1) //이름을 찾아 장착으로 바꾸기 그리고 공격력 증가
                 {
-                    if(Foritem[userInput - 1].Name == item.Name)
+                    if (Foritem[userInput - 1].Name == item.Name)
                     {
 
                         foreach (var item2 in Player.haveitem1)  //본래건 장착 해제
                         {
-                            if(item2.Setting)
+                            if (item2.Setting)
                             {
                                 item2.Setting = false;
                             }
@@ -747,7 +754,6 @@ namespace TextGame2
             Console.WriteLine("[아이템 목록]");
 
 
-            int i = 1;
 
             List<item> Foritem = new List<item>();  //여기서 한꺼번에 목록 저장 (플레이어에게 보낼 목록)
             foreach (var item in Armors)
@@ -1034,7 +1040,7 @@ namespace TextGame2
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (var item in Player.haveitem1)  //방어구 반복
             {
-                if(item.Have)
+                if (item.Have)
                 {
                     Foritem.Add(item);
 
@@ -1044,7 +1050,7 @@ namespace TextGame2
                     i++;
                 }
 
-           
+
 
 
 
@@ -1052,7 +1058,7 @@ namespace TextGame2
 
             foreach (var item in Player.haveitem2)
             {
-                if(item.Have)
+                if (item.Have)
                 {
                     Foritem.Add(item);
 
@@ -1062,7 +1068,7 @@ namespace TextGame2
                     i++;
                 }
 
-            
+
             }
             Console.ResetColor();
             //----------------------------------------------------------------------
@@ -1130,7 +1136,7 @@ namespace TextGame2
 
 
             }
-            
+
 
         }
 
@@ -1161,6 +1167,40 @@ namespace TextGame2
         }
 
 
+
+        static void Save(Character player)
+        {
+            // 플레이어 정보를 JSON으로 변환하여 파일에 저장
+            string filePath = "player.json";
+            string json = JsonConvert.SerializeObject(player);
+            File.WriteAllText(filePath, json);
+
+            //string json2 = JsonConvert.SerializeObject(UntilLV);
+            //File.WriteAllText("UntilLV.json", json2);
+        }
+
+        static Character Load()
+        {
+            // 파일에서 JSON 읽기
+            string filePath = "player.json";
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<Character>(json);
+            }
+            else
+            {
+                Rename = true; //이름 새설정
+                // 파일이 없으면 기본값으로 새 플레이어 생성
+                return new Character { }; //클래스 생성
+
+            }
+        }
+
+        static void OnProcessExit(object sender, EventArgs e) //프로세스 종료전 이 함수가 실행 델리게이트로
+        {
+            Save(Player);
+        }
 
 
         //----------------------------------------------
